@@ -14,9 +14,10 @@ connect();
 const port = process.env.PORT || 7000;
 
 app.use('/user', require('./routes/userRoutes'));
+app.use('/chat', require('./routes/chatRoutes'));
 
-app.use(notFound);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(errorHandler);
 
 app.get('/chat', (req, resp) => {
     resp.send(chats);

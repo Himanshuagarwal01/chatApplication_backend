@@ -3,7 +3,6 @@ const User = require('../model/userModel');
 const generateToken = require('../config/generateToken');
 
 const register = asyncHandler(async (req, resp) => {
-    console.log('req', req.body)
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
         resp.status(400);
@@ -32,10 +31,9 @@ const register = asyncHandler(async (req, resp) => {
 const login = asyncHandler(async (req, resp) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    console.log('user', user)
     if (user && (await user.matchPassword(password))) {
         resp.status(200).send({
-            user,
+            ...user._doc,
             token: generateToken(user._id)
         })
     } else {
@@ -51,7 +49,7 @@ const searchUser = asyncHandler(async (req, resp) => {
     const data = req.query.search ? req.query.search : { $ne: req.user._id }
     const regex = new RegExp(data, "i");
     const userData = await User.find({ name: regex });
-    const loginUsersData = userData.filter(user => user._id.toString() === loginUser[0]._id.toString());
+    const loginUsersData = userData.filter(user => user._id.toString() === loginUser._id.toString());
     console.log("userData", loginUsersData);
 
     if (loginUsersData) {
